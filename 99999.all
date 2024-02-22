@@ -1,0 +1,6 @@
+#!/bin/bash
+
+
+
+echo `./1.0.todos`
+echo `./1.2.posts`

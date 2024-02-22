@@ -1,0 +1,35 @@
+#!/bin/bash
+
+# this while block checks parameter inputs and assigns the to appropriate variables
+# testname and testres - to use in final check
+while [[ $# -gt 0 ]]; do
+      key="$1"
+      case $key in
+            --testname)
+            testname="$2"
+      shift
+      shift
+      ;;
+            --testres)
+            testres="$2"
+      shift
+      shift
+      ;;
+      *)
+      exit 1
+      shift
+      ;;
+      esac
+done
+
+# include file containing settings
+# ex colors for highlighting test result
+source test_settings.conf
+
+# print final test result depending on it's bool valueI
+if [[ "$testres" == "true" ]]
+then
+    printf ${GREEN}[OK]${ENDCOLOR}" - ${testname}"
+else
+	printf ${RED}[FAIL]${ENDCOLOR}" - ${testname}"
+fi

@@ -1,0 +1,6 @@
+#!/bin/bash
+timestamp=$(date +%s)
+
+echo `./99999.all > results/${timestamp}.log`
+
+cat results/${timestamp}.log

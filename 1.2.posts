@@ -1,0 +1,48 @@
+#!/bin/bash
+
+#include code from the test_urls.conf file
+source test_urls.conf
+
+CURRENT_FILE_NAME="1.1.posts"
+
+#use ROOT_URL defined in test_urls.conf file
+TESTED_RESOURCE_URL=${ROOT_URL}"/posts"
+testname=${CURRENT_FILE_NAME}' => POST:'${TESTED_RESOURCE_URL}
+
+response=$(
+curl --location --silent --request POST ${TESTED_RESOURCE_URL} \
+--header 'Content-Type: application/json' \
+-d '
+{
+    "title": "foo",
+    "body": "bar",
+    "userId": 1
+}
+'
+)
+
+RES=`echo "$response" `
+
+    res2=`echo "$RES" | jq -r '.'title `
+    res3=`echo "$RES" | jq -r '.'body `
+    res4=`echo "$RES" | jq -r '.'userId `
+    res5=`echo "$RES" | jq -r '.'id `
+
+if [[
+      $res2 == "foo" &&
+      $res3 == "bar" &&
+      $res4 == 1 &&
+      $res5 -gt 1
+   ]]
+then
+	  TEST_RES=true
+else
+	  TEST_RES=false
+      printf "$response"
+      printf "
+
+      "
+fi
+
+# execute test_verify script with parameters
+./test_verify --testname ${CURRENT_FILE_NAME} --testres ${TEST_RES}

@@ -1,0 +1,36 @@
+#!/bin/bash
+
+#include code from the test_urls.conf file
+source test_urls.conf
+
+CURRENT_FILE_NAME="1.0.todos"
+
+#use ROOT_URL defined in test_urls.conf file
+TESTED_RESOURCE_URL=${ROOT_URL}"/todos/1"
+testname=${CURRENT_FILE_NAME}' => GET:'${TESTED_RESOURCE_URL}
+
+response=$(curl --location --silent --request GET ${TESTED_RESOURCE_URL})
+
+RES=`echo "$response" `
+
+    res2=`echo "$RES" | jq -r '.'userId `
+    res3=`echo "$RES" | jq -r '.'id `
+    res4=`echo "$RES" | jq -r '.'completed `
+
+if [[
+      $res2 == "1" &&
+      $res3 == "1" &&
+      $res4 == false
+   ]]
+then
+	  TEST_RES=true
+else
+	  TEST_RES=false
+      printf "$response"
+      printf "
+
+      "
+fi
+
+# execute test_verify script with parameters
+./test_verify --testname ${CURRENT_FILE_NAME} --testres ${TEST_RES}
